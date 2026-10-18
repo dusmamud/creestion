@@ -693,9 +693,12 @@ function PagerButton({
     ? side === "left"
       ? "left-4"
       : "right-4"
-    : side === "left"
-      ? "-left-5"
-      : "-right-5";
+    : // Strip: overhang the edge on roomy screens, but sit inside on small
+      // screens where the strip is full-bleed (otherwise the button is cut
+      // off by the viewport and looks broken/faint).
+      side === "left"
+      ? "left-2 sm:-left-5"
+      : "right-2 sm:-right-5";
   return (
     <Button
       type="button"
@@ -707,9 +710,9 @@ function PagerButton({
         e.stopPropagation();
         onClick();
       }}
-      className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-popover shadow-md transition-none hover:bg-popover focus-visible:ring-0 active:not-aria-[haspopup]:-translate-y-1/2 ${offset}`}
+      className={`absolute top-1/2 z-10 -translate-y-1/2 rounded-full bg-popover shadow-md transition-none hover:bg-popover focus-visible:ring-0 disabled:opacity-70 active:not-aria-[haspopup]:-translate-y-1/2 ${offset}`}
     >
-      <Icon />
+      <Icon className="size-5" strokeWidth={2.5} />
     </Button>
   );
 }
