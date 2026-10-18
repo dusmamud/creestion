@@ -89,6 +89,28 @@ a { color: var(--brand); }
 .badge { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; font-weight: 600; color: var(--brand-dark); background: var(--brand-soft); border: 1px solid var(--line); padding: 0.35rem 0.95rem; border-radius: 999px; margin-bottom: 1.25rem; }
 .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
 .hero h1 { margin-bottom: 1rem; color: var(--ink); }
+/* Rotating word: the headline is alive, not static. */
+.rw-words { position: relative; display: inline-block; vertical-align: bottom; height: 1.18em; overflow: hidden; transition: width 0.45s ease; }
+.rw-w { position: absolute; left: 0; top: 0; white-space: nowrap; color: var(--brand); opacity: 0; transform: translateY(75%); transition: opacity 0.45s ease, transform 0.45s ease; }
+.rw-w.is-on { opacity: 1; transform: none; }
+.rw-w.is-off { opacity: 0; transform: translateY(-75%); }
+/* Staggered entrance: badge -> headline -> sub -> CTAs -> trust -> showcase. */
+@keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.hero-top > * { animation: rise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.hero-top > *:nth-child(2) { animation-delay: 0.08s; }
+.hero-top > *:nth-child(3) { animation-delay: 0.16s; }
+.hero-top > *:nth-child(4) { animation-delay: 0.24s; }
+.hero-top > *:nth-child(5) { animation-delay: 0.32s; }
+.hero-showcase { animation: rise 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s both; }
+/* Showcase interactivity: gentle lift on hover (pointer devices only). */
+@media (hover: hover) {
+  .shot { transition: transform 0.25s ease; }
+  .shot:hover { transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-top > *, .hero-showcase { animation: none; }
+  .rw-w { transition: none; }
+}
 .lede { font-size: 1.15rem; color: var(--muted); max-width: 36rem; margin: 0 auto; }
 .micro { font-size: 0.88rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
 .micro svg { width: 15px; height: 15px; color: #22c55e; }

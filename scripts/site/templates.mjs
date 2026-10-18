@@ -138,6 +138,22 @@ ${footer()}
       a.addEventListener('click', function(){ menu.classList.remove('open'); });
     });
   }
+  /* Hero rotating word: cycles designed -> crafted -> polished -> shipped. */
+  var rwBox = document.querySelector('.rw-words');
+  var rwWords = Array.prototype.slice.call(document.querySelectorAll('.rw-w'));
+  if (rwBox && rwWords.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    rwBox.style.width = rwWords[0].offsetWidth + 'px';
+    var ri = 0;
+    setInterval(function(){
+      rwWords[ri].classList.remove('is-on');
+      rwWords[ri].classList.add('is-off');
+      ri = (ri + 1) % rwWords.length;
+      rwWords[ri].classList.remove('is-off');
+      rwWords[ri].classList.add('is-on');
+      rwBox.style.width = rwWords[ri].offsetWidth + 'px';
+      rwBox.setAttribute('aria-label', rwWords[ri].textContent);
+    }, 2600);
+  }
 })();
 </script>
 </body>
@@ -209,7 +225,7 @@ export function homePage() {
 <section class="hero">
   <div class="wrap hero-top">
     <span class="badge"><span class="dot"></span>Free forever · No signup · No watermark</span>
-    <h1>App store screenshots,<br>designed in minutes.</h1>
+    <h1>App store screenshots,<br><span class="rw-words" aria-label="designed"><span class="rw-w is-on">designed</span><span class="rw-w">crafted</span><span class="rw-w">polished</span><span class="rw-w">shipped</span></span> in minutes.</h1>
     <p class="lede">Upload your app's screens, arrange them on exact-size canvases for every major store, and export full-resolution PNGs — right in your browser.</p>
     <div class="cta-row center">
       <a class="btn btn-primary btn-lg" href="/generator/">Open the Studio — it's free</a>
