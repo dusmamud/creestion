@@ -207,10 +207,9 @@ export function homePage() {
   ).join("");
   const body = `
 <section class="hero">
-  <div class="hero-bg" aria-hidden="true"><span class="orb orb-1"></span><span class="orb orb-2"></span></div>
   <div class="wrap hero-in">
     <span class="badge"><span class="dot"></span>Free forever · No signup · No watermark</span>
-    <h1>App store screenshots,<br><span class="grad">designed in minutes.</span></h1>
+    <h1>App store screenshots,<br>designed in minutes.</h1>
     <p class="lede">Creestion is a free studio for beautiful store listings. Upload your app's screenshots, arrange them on exact-size canvases for iPhone, iPad, Android, Mac, and Windows — then export full-resolution PNGs.</p>
     <div class="cta-row center">
       <a class="btn btn-primary btn-lg" href="/generator/">Open the Studio — it's free</a>
