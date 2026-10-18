@@ -202,12 +202,12 @@ export const HOME_FAQS = [
 ];
 
 export const FEATURES = [
-  { t: "Exact store canvases", d: "Pixel-perfect canvas sizes for the App Store, Google Play, Mac App Store, and Microsoft Store. What you design is what you upload." },
-  { t: "Upload your screens", d: "Drop in PNG screenshots per scene. Replace or delete anytime — your files stay in your browser, never on a server." },
-  { t: "Edit headlines in place", d: "Click any headline or subheading to rewrite it live on the tile. Drag layers to fine-tune the composition." },
-  { t: "Built-in templates", d: "Magazine-style layouts, fonts, backgrounds, and device frames included — or go frameless for desktop stores." },
-  { t: "One-click ZIP export", d: "Export every scene as a full-resolution PNG, zipped per device. No watermark, no account, no limits." },
-  { t: "Private by design", d: "No signup, no tracking pixels in the studio, no uploads. Your work never leaves your device." },
+  { t: "Exact store canvases", d: "Pixel-perfect canvas sizes for the App Store, Google Play, Mac App Store, and Microsoft Store. What you design is what you upload.", img: "/screenshots/feat-1.png" },
+  { t: "Upload your screens", d: "Drop in PNG screenshots per scene. Replace or delete anytime — your files stay in your browser, never on a server.", img: "/screenshots/feat-2.png" },
+  { t: "Edit headlines in place", d: "Click any headline or subheading to rewrite it live on the tile. Drag layers to fine-tune the composition.", img: "/screenshots/feat-3.png" },
+  { t: "Built-in templates", d: "Magazine-style layouts, fonts, backgrounds, and device frames included — or go frameless for desktop stores.", img: "/screenshots/feat-4.png" },
+  { t: "One-click ZIP export", d: "Export every scene as a full-resolution PNG, zipped per device. No watermark, no account, no limits.", img: "/screenshots/feat-5.png" },
+  { t: "Private by design", d: "No signup, no tracking pixels in the studio, no uploads. Your work never leaves your device.", img: "/screenshots/feat-6.png" },
 ];
 
 export const STEPS = [

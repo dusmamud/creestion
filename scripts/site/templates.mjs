@@ -231,7 +231,7 @@ function faqBlock(faqs) {
 
 export function homePage() {
   const features = FEATURES.map(
-    (f) => `<div class="card"><h3>${esc(f.t)}</h3><p>${esc(f.d)}</p></div>`
+    (f) => `<div class="card"><img class="feat-img" src="${f.img}" alt="" width="120" height="120" loading="lazy"><h3>${esc(f.t)}</h3><p>${esc(f.d)}</p></div>`
   ).join("");
   const steps = STEPS.map(
     (s, i) => `<div class="card step"><span class="step-n">${i + 1}</span><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`

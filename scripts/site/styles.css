@@ -144,6 +144,7 @@ a { color: var(--brand); }
 .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 .card h3 { font-size: 1.05rem; }
 .card p { color: var(--muted); font-size: 0.95rem; margin: 0; }
+.feat-img { width: 72px; height: 72px; object-fit: contain; margin-bottom: 1rem; }
 .step-n { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem; }
 a.card.device { text-decoration: none; color: var(--ink); display: flex; flex-direction: column; gap: 0.25rem; }
 a.card.device .store { color: var(--muted); font-size: 0.9rem; }
