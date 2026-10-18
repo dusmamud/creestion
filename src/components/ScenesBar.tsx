@@ -41,7 +41,7 @@ export function ScenesBar({
   return (
     <>
       {/* Mobile (< sm): one swipeable row of chips. Desktop: wrapped rows. */}
-      <div className="-mx-4 mb-4 flex snap-x items-center gap-2 overflow-x-auto px-4 pt-1 pb-1 [scrollbar-width:none] sm:mx-0 sm:mb-4 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pt-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
+      <div className="mb-4 flex snap-x items-center gap-2 overflow-x-auto pt-1 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:pt-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
         {scenes.map((scene) => (
           <SceneChip
             key={scene.id}

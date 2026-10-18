@@ -453,7 +453,7 @@ export function Strip({
           )}
         </Reorder.Group>
       ) : (
-        <div className="relative">
+        <div className="relative overflow-x-clip">
           {/* Clips only horizontally, so a sliding page vanishes at the strip's
               edge while tile shadows and the hover lift stay visible; the small
               padding keeps the edge tiles' own shadows out of the clip. */}
