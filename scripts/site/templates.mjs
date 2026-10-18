@@ -154,6 +154,27 @@ ${footer()}
       rwBox.setAttribute('aria-label', rwWords[ri].textContent);
     }, 2600);
   }
+  /* Stats count-up: numbers animate when scrolled into view. */
+  var counters = document.querySelectorAll('[data-count]');
+  if (counters.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (!en.isIntersecting) return;
+        cio.unobserve(en.target);
+        var el = en.target, target = parseInt(el.getAttribute('data-count'), 10) || 0;
+        var t0 = null, dur = 1300;
+        function tick(t){
+          if (!t0) t0 = t;
+          var p = Math.min((t - t0) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased);
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    Array.prototype.forEach.call(counters, function(c){ cio.observe(c); });
+  }
 })();
 </script>
 </body>
@@ -260,8 +281,8 @@ export function homePage() {
 </section>
 
 <section class="strip"><div class="wrap stats">
-  <div><strong>5</strong><span>device canvases</span></div>
-  <div><strong>100%</strong><span>free forever</span></div>
+  <div><strong><span data-count="5">5</span></strong><span>device canvases</span></div>
+  <div><strong><span data-count="100">100</span>%</strong><span>free forever</span></div>
   <div><strong>0</strong><span>signups · uploads</span></div>
   <div><strong>4K</strong><span>max export size</span></div>
 </div></section>

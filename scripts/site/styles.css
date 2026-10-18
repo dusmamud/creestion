@@ -134,8 +134,8 @@ a { color: var(--brand); }
 
 /* ---------- Content sections (unchanged areas, theme-aware) ---------- */
 .strip { background: var(--bg); }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; padding: 1.75rem 1.25rem; }
-.stats strong { display: block; font-size: 1.9rem; letter-spacing: -0.02em; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; padding: 2.5rem 1.25rem; gap: 1rem; }
+.stats strong { display: block; font-size: 2.3rem; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .stats span { color: var(--muted); font-size: 0.9rem; }
 .section { padding: 4rem 1.25rem; }
 .section .sub { color: var(--muted); max-width: 40rem; margin-bottom: 2rem; }
