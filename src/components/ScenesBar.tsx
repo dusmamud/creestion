@@ -1,44 +1,72 @@
 import { ImagePlusIcon, PlusIcon, Trash2Icon, UploadIcon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
+import type { DeviceCaptures, DesignScene } from "../manifest";
 import { Button } from "./ui/button";
-import { slugify, type Creestion, type Scene } from "../store";
 
 /**
- * Manual scene management: scenes are added here and each gets its
- * screenshot via upload (click or drag-drop). A scene with no screenshot
- * yet shows an upload affordance; one with a screenshot shows replace/delete.
+ * Manual scene management: the studio works without argent captures, so
+ * scenes are added here and each gets its screenshot via upload (click or
+ * drag-drop). A scene with no capture yet shows an upload affordance; one
+ * with a capture shows replace/delete.
  */
-export function ScenesBar({ store }: { store: Creestion }) {
-  const { orderedScenes, design, addScene, deleteScene, setShot } = store;
+export function ScenesBar({
+  scenes,
+  captures,
+  onUpload,
+  onAddScene,
+  onDeleteScene,
+}: {
+  scenes: DesignScene[];
+  captures: DeviceCaptures | undefined;
+  onUpload: (sceneId: string, file: File) => Promise<void>;
+  onAddScene: (id: string, headline: string) => Promise<void>;
+  onDeleteScene: (sceneId: string) => Promise<void>;
+}) {
   const [adding, setAdding] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const run = async (key: string, fn: () => Promise<void>) => {
+    setBusy(key);
+    setError(null);
+    try {
+      await fn();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(null);
+    }
+  };
 
   return (
     <div className="mb-4 flex flex-wrap items-center gap-2">
-      {orderedScenes.map((scene) => (
+      {scenes.map((scene) => (
         <SceneChip
           key={scene.id}
           scene={scene}
-          hasShot={Boolean(scene.shots[design.device])}
-          onUpload={(file) => setShot(scene.id, design.device, file)}
-          onDelete={() => deleteScene(scene.id)}
+          hasCapture={captures?.screenshots.some((s) => s.sceneId === scene.id) ?? false}
+          busy={busy === scene.id}
+          disabled={busy !== null}
+          onUpload={(file) => run(scene.id, () => onUpload(scene.id, file))}
+          onDelete={() => run(`del:${scene.id}`, () => onDeleteScene(scene.id))}
         />
       ))}
       {adding ? (
         <AddSceneForm
           onCancel={() => setAdding(false)}
-          onSubmit={(id, headline) => {
-            try {
-              addScene(id, headline);
-              setAdding(false);
-              setError(null);
-            } catch (e) {
-              setError(e instanceof Error ? e.message : String(e));
-            }
-          }}
+          onSubmit={(id, headline) => run("add", () => onAddScene(id, headline).then(() => setAdding(false)))}
         />
       ) : (
-        <Button variant="outline" size="sm" onClick={() => setAdding(true)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={busy !== null}
+          onClick={() => {
+            setError(null);
+            setAdding(true);
+          }}
+        >
           <PlusIcon /> Add scene
         </Button>
       )}
@@ -49,27 +77,29 @@ export function ScenesBar({ store }: { store: Creestion }) {
 
 function SceneChip({
   scene,
-  hasShot,
+  hasCapture,
+  busy,
+  disabled,
   onUpload,
   onDelete,
 }: {
-  scene: Scene;
-  hasShot: boolean;
+  scene: DesignScene;
+  hasCapture: boolean;
+  busy: boolean;
+  disabled: boolean;
   onUpload: (file: File) => void;
   onDelete: () => void;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
-
-  const accept = (files: FileList | null) => {
-    const file = files?.[0];
-    if (file && file.type.startsWith("image/")) onUpload(file);
-  };
-
   return (
     <div
-      className={`flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-[12px] ${
-        dragging ? "border-primary bg-primary/5" : ""
+      className={`flex items-center gap-1.5 rounded-full border py-1 pr-1 pl-3 text-xs transition-colors ${
+        dragging
+          ? "border-primary bg-primary/10"
+          : hasCapture
+            ? "border-border bg-background"
+            : "border-dashed border-muted-foreground/40 bg-muted/50"
       }`}
       onDragOver={(e) => {
         e.preventDefault();
@@ -79,52 +109,59 @@ function SceneChip({
       onDrop={(e) => {
         e.preventDefault();
         setDragging(false);
-        accept(e.dataTransfer.files);
+        const file = e.dataTransfer.files?.[0];
+        if (file) onUpload(file);
       }}
+      title={hasCapture ? `Screenshot uploaded for "${scene.id}"` : `No screenshot yet for "${scene.id}" — drop a PNG here`}
     >
-      <span className="max-w-28 truncate font-medium">{scene.id}</span>
+      <span className="max-w-32 truncate font-medium">{scene.id}</span>
       <input
-        ref={inputRef}
+        ref={input}
         type="file"
-        accept="image/png,image/jpeg,image/webp"
+        accept="image/png"
         className="hidden"
+        disabled={disabled}
         onChange={(e) => {
-          accept(e.target.files);
+          const file = e.target.files?.[0];
           e.target.value = "";
+          if (file) onUpload(file);
         }}
       />
       <Button
+        type="button"
         variant="ghost"
-        size="icon-sm"
-        title={hasShot ? "Replace screenshot" : "Upload screenshot"}
-        aria-label={hasShot ? `Replace screenshot for ${scene.id}` : `Upload screenshot for ${scene.id}`}
-        onClick={() => inputRef.current?.click()}
+        size="icon-xs"
+        disabled={disabled || busy}
+        aria-label={hasCapture ? `Replace screenshot for ${scene.id}` : `Upload screenshot for ${scene.id}`}
+        title={hasCapture ? "Replace screenshot" : "Upload screenshot"}
+        onClick={() => input.current?.click()}
       >
-        {hasShot ? <UploadIcon /> : <ImagePlusIcon />}
+        {hasCapture ? <UploadIcon /> : <ImagePlusIcon />}
       </Button>
-      <Button variant="ghost" size="icon-sm" title="Delete scene" aria-label={`Delete ${scene.id}`} onClick={onDelete}>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-xs"
+        disabled={disabled || busy}
+        aria-label={`Delete scene ${scene.id}`}
+        title="Delete scene"
+        onClick={onDelete}
+      >
         <Trash2Icon />
       </Button>
     </div>
   );
 }
 
-function AddSceneForm({
-  onCancel,
-  onSubmit,
-}: {
-  onCancel: () => void;
-  onSubmit: (id: string, headline: string) => void;
-}) {
+function AddSceneForm({ onCancel, onSubmit }: { onCancel: () => void; onSubmit: (id: string, headline: string) => void }) {
   const [id, setId] = useState("");
   const [headline, setHeadline] = useState("");
   return (
     <form
-      className="flex items-center gap-1.5 rounded-lg border border-dashed px-2 py-1.5"
+      className="flex items-center gap-1.5 rounded-full border border-border bg-background py-1 pr-1 pl-3"
       onSubmit={(e) => {
         e.preventDefault();
-        const sid = slugify(id);
-        if (sid) onSubmit(sid, headline || sid);
+        if (id.trim()) onSubmit(id.trim(), headline.trim());
       }}
     >
       <input
@@ -132,18 +169,20 @@ function AddSceneForm({
         value={id}
         onChange={(e) => setId(e.target.value)}
         placeholder="scene-id"
-        className="w-24 rounded border border-input bg-background px-1.5 py-1 text-[12px]"
+        aria-label="Scene id"
+        className="w-24 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
       />
       <input
         value={headline}
         onChange={(e) => setHeadline(e.target.value)}
         placeholder="Headline (optional)"
-        className="w-32 rounded border border-input bg-background px-1.5 py-1 text-[12px]"
+        aria-label="Headline"
+        className="w-32 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
       />
-      <Button type="submit" size="sm" variant="default">
-        Add
+      <Button type="submit" variant="ghost" size="icon-xs" aria-label="Add scene" disabled={!id.trim()}>
+        <PlusIcon />
       </Button>
-      <Button type="button" size="icon-sm" variant="ghost" onClick={onCancel} aria-label="Cancel">
+      <Button type="button" variant="ghost" size="icon-xs" aria-label="Cancel" onClick={onCancel}>
         <XIcon />
       </Button>
     </form>

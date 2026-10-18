@@ -10,6 +10,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "html-to-image": "^1.11.13",
     "jszip": "^3.10.2",
     "konva": "^9.3.0",
     "lucide-react": "^1.34.0",
@@ -32,7 +33,7 @@
     "typescript": "~5.9.3",
     "vite": "^7.1.9"
   },
-  "description": "Creestion Studio \u2014 a client-side App Store screenshot editor. Upload screenshots, edit, export.",
+  "description": "Creestion Studio — a client-side App Store screenshot editor. Upload screenshots, edit, export.",
   "version": "0.1.0",
   "license": "MIT",
   "author": "Dus Mamud",
