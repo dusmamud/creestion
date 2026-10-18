@@ -274,17 +274,21 @@ export async function loadManifest(): Promise<StoreManifest> {
   });
 
   const captures: Record<string, DeviceCaptures> = {};
-  const shots: Array<{ sceneId: string; url: string }> = [];
-  for (const d of DEMO_SCENES) {
-    if (deleted.has(d.id)) continue;
-    const session = sessionShots["iphone-6.9"]?.[d.id];
-    shots.push({ sceneId: d.id, url: session ?? d.shot });
+  // Demo shots show on every device tab (cover-cropped to the device aspect);
+  // session uploads are per-device, like the original studio.
+  for (const deviceKey of ["iphone-6.9", "ipad-13", "pixel-10-pro"]) {
+    const shots: Array<{ sceneId: string; url: string }> = [];
+    for (const d of DEMO_SCENES) {
+      if (deleted.has(d.id)) continue;
+      const session = sessionShots[deviceKey]?.[d.id];
+      shots.push({ sceneId: d.id, url: session ?? d.shot });
+    }
+    for (const s of overlay.addedScenes) {
+      const session = sessionShots[deviceKey]?.[s.id];
+      if (session) shots.push({ sceneId: s.id, url: session });
+    }
+    if (shots.length > 0) captures[deviceKey] = { screenshots: shots, clips: null };
   }
-  for (const s of overlay.addedScenes) {
-    const session = sessionShots["iphone-6.9"]?.[s.id];
-    if (session) shots.push({ sceneId: s.id, url: session });
-  }
-  if (shots.length > 0) captures["iphone-6.9"] = { screenshots: shots, clips: null };
 
   return {
     generatedAt: new Date().toISOString(),
