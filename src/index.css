@@ -1,0 +1,267 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* The appearance toggle sets .dark on <html>; without this, `dark:` would
+   follow the OS instead and the toggle would do nothing. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: -apple-system, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+  /* App Store blue, the accent on every Get button and link. */
+  --color-store-blue: #007aff;
+  --color-store-blue-dark: #0a84ff;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Wordmark: golden text with a shine that sweeps across every so often.
+   The sweep itself takes ~1s of a 9s cycle; the rest of the time the
+   highlight sits parked off to the left so the text reads as plain gold. */
+.creestion-wordmark {
+  background-image: linear-gradient(
+    105deg,
+    #b8860b 0%,
+    #b8860b 40%,
+    #ffe9a3 50%,
+    #b8860b 60%,
+    #b8860b 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: creestion-shine 9s ease-in-out infinite;
+}
+
+.dark .creestion-wordmark {
+  background-image: linear-gradient(
+    105deg,
+    #d4a017 0%,
+    #d4a017 40%,
+    #fff3c4 50%,
+    #d4a017 60%,
+    #d4a017 100%
+  );
+}
+
+@keyframes creestion-shine {
+  0% {
+    background-position: 100% 0;
+  }
+  12% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --color-stage: var(--stage);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.965 0.004 80);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.965 0.004 80);
+  --muted-foreground: oklch(0.5 0.01 80);
+  --accent: oklch(0.955 0.004 80);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.89 0.004 80);
+  --input: oklch(0.87 0.004 80);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.5rem;
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.9 0.004 80);
+  --sidebar-ring: oklch(0.708 0 0);
+  /* The canvas the strip sits on, darker than the chrome. */
+  --stage: oklch(0.935 0.006 80);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.22 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.185 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+  --stage: oklch(0.12 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans antialiased;
+  }
+  .tabular-nums {
+    font-feature-settings: "tnum";
+  }
+}
+
+/* Thin overlay-style scrollbar for the sidebar. */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, currentColor 18%, transparent) transparent;
+}
+
+/* Lift for artwork tiles on the stage. */
+.tile-shadow {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.08),
+    0 12px 32px -12px rgb(0 0 0 / 0.35);
+}
+.dark .tile-shadow {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 16px 40px -12px rgb(0 0 0 / 0.8);
+}
+
+/* Inset edge so pastel swatches keep an outline on white. */
+.swatch-edge {
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+.dark .swatch-edge {
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+/* shadcn's primary is the App Store blue so Button and Slider pick up the accent. */
+:root {
+  --primary: #007aff;
+  --primary-foreground: #ffffff;
+  --ring: #007aff;
+}
+
+.dark {
+  --primary: #0a84ff;
+  --primary-foreground: #ffffff;
+  --ring: #0a84ff;
+}
+
+/* Tile -> lightbox shared-element morph (Strip.tsx): only the scene animates,
+   the rest of the page (backdrop included) switches instantly. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-group(lightbox-scene) {
+  animation-duration: 150ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Copy editable in place inside the lightbox. */
+.editable-copy {
+  cursor: text;
+  border-radius: 0.6cqw;
+  outline: 0.2cqw dashed transparent;
+  outline-offset: 0.6cqw;
+  transition: outline-color 120ms;
+  white-space: pre-wrap;
+}
+.editable-copy:hover {
+  outline-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+.editable-copy:focus {
+  outline-color: color-mix(in srgb, currentColor 70%, transparent);
+}
+.editable-copy:empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.4;
+}
