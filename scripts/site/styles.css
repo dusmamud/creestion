@@ -48,7 +48,7 @@ p { margin: 0 0 1rem; }
 a { color: var(--brand); }
 
 /* ---------- Header ---------- */
-.site-header { position: sticky; top: 0; z-index: 50; background: var(--header-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.site-header { position: sticky; top: 0; z-index: 50; background: var(--header-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .header-in { display: flex; align-items: center; gap: 1rem; height: 66px; }
 .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; }
 .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--brand); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 1.05rem; }
@@ -84,7 +84,7 @@ a { color: var(--brand); }
 /* ---------- Hero: output-first, professional ----------
    Compact pitch on top, then the finished work: real screenshot
    designs in device frames for all five stores. */
-.hero { position: relative; overflow: hidden; background: var(--bg); border-bottom: 1px solid var(--line); }
+.hero { position: relative; overflow: hidden; background: var(--bg); }
 .hero-top { text-align: center; padding: 4.5rem 1.25rem 0; max-width: 760px; }
 .badge { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; font-weight: 600; color: var(--brand-dark); background: var(--brand-soft); border: 1px solid var(--line); padding: 0.35rem 0.95rem; border-radius: 999px; margin-bottom: 1.25rem; }
 .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
@@ -116,7 +116,7 @@ a { color: var(--brand); }
 .micro svg { width: 15px; height: 15px; color: #22c55e; }
 
 /* Showcase band: the finished screenshots, like a store preview. */
-.hero-showcase { background: var(--bg-soft); border-top: 1px solid var(--line); margin-top: 3.25rem; padding: 3rem 0 3.25rem; overflow: hidden; }
+.hero-showcase { background: var(--bg); margin-top: 3.25rem; padding: 3rem 0 3.25rem; overflow: hidden; }
 .showcase-row { display: flex; align-items: flex-end; justify-content: center; gap: 1.75rem; max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
 .shot { margin: 0; text-align: center; flex-shrink: 0; }
 .shot figcaption { margin-top: 0.8rem; font-size: 0.8rem; color: var(--muted); font-weight: 500; line-height: 1.45; }
@@ -133,7 +133,7 @@ a { color: var(--brand); }
 .frame-desk.r169 { width: 284px; aspect-ratio: 16 / 9; }
 
 /* ---------- Content sections (unchanged areas, theme-aware) ---------- */
-.strip { border-bottom: 1px solid var(--line); background: var(--card); }
+.strip { background: var(--bg); }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; padding: 1.75rem 1.25rem; }
 .stats strong { display: block; font-size: 1.9rem; letter-spacing: -0.02em; }
 .stats span { color: var(--muted); font-size: 0.9rem; }
@@ -170,19 +170,17 @@ a.card.device .go { color: var(--brand); font-weight: 600; font-size: 0.9rem; ma
 .faq summary::marker { color: var(--brand); }
 .faq p { color: var(--muted); margin: 0.6rem 0 0; }
 .related { font-size: 1.05rem; }
-.cta-band { background: var(--brand); color: #fff; text-align: center; padding: 4.5rem 1.25rem; }
-.cta-band h2 { color: #fff; }
-.cta-band p { color: rgba(255, 255, 255, 0.85); margin-bottom: 1.75rem; }
-.cta-band .btn-primary { background: #fff; color: var(--brand-dark); box-shadow: none; }
-.cta-band .btn-primary:hover { background: #f2f2f2; }
-.site-footer { border-top: 1px solid var(--line); background: var(--bg-soft); margin-top: 2rem; }
+.cta-band { background: var(--bg); color: var(--ink); text-align: center; padding: 4.5rem 1.25rem; }
+.cta-band h2 { color: var(--ink); }
+.cta-band p { color: var(--muted); margin-bottom: 1.75rem; }
+.site-footer { background: var(--bg); margin-top: 2rem; }
 .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; padding: 3rem 1.25rem 2rem; }
 .foot-brand p { color: var(--muted); font-size: 0.92rem; max-width: 22rem; }
 .site-footer h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.75rem; }
 .site-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .site-footer ul a { color: var(--ink); text-decoration: none; font-size: 0.95rem; }
 .site-footer ul a:hover { color: var(--brand); }
-.foot-base { border-top: 1px solid var(--line); padding: 1.25rem; color: var(--muted); font-size: 0.85rem; }
+.foot-base { padding: 1.25rem; color: var(--muted); font-size: 0.85rem; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
@@ -199,7 +197,7 @@ a.card.device .go { color: var(--brand); font-weight: 600; font-size: 0.9rem; ma
 @media (max-width: 760px) {
   .site-nav { display: none; }
   .menu-btn { display: inline-grid; }
-  .mobile-menu { display: block; position: fixed; inset: 66px 0 auto 0; z-index: 49; background: var(--card); border-bottom: 1px solid var(--line); padding: 0.75rem 1.25rem 1.25rem; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease; box-shadow: var(--shadow-lg); }
+  .mobile-menu { display: block; position: fixed; inset: 66px 0 auto 0; z-index: 49; background: var(--card); padding: 0.75rem 1.25rem 1.25rem; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease; box-shadow: var(--shadow-lg); }
   .mobile-menu.open { transform: none; opacity: 1; pointer-events: auto; }
   .mobile-menu a.m-link { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 0.25rem; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 1.02rem; border-bottom: 1px solid var(--line); }
   .mobile-menu a.m-link:last-of-type { border-bottom: 0; }
