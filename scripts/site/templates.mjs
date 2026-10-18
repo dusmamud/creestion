@@ -4,12 +4,29 @@ import { SITE, DEVICES, HOME_FAQS, FEATURES, STEPS } from "./data.mjs";
 const esc = (s) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+/* Inline SVG icons (stroke = currentColor). */
+const I = {
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+  menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m6 9 6 6 6-6"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg>',
+  monitor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>',
+};
+
+/* Runs before paint: picks saved theme or OS preference, avoids a flash. */
+const themeInit = `<script>try{var t=localStorage.getItem('creestion-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}</script>`;
+
 function head({ title, description, path, ogImage, jsonLd }) {
   const url = `${SITE.domain}/${path}`;
   const schemas = (jsonLd || []).map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join("\n");
   return `<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+${themeInit}
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${url}">
@@ -31,7 +48,10 @@ ${schemas}
 
 function header(active) {
   const deviceLinks = DEVICES.map(
-    (d) => `<a href="/${d.path}/">${d.name}</a>`
+    (d) => `<a href="/${d.path}/">${d.name}<span>${d.canvas}</span></a>`
+  ).join("");
+  const mDeviceLinks = DEVICES.map(
+    (d) => `<a class="m-link" href="/${d.path}/">${d.name} screenshots<span>→</span></a>`
   ).join("");
   return `<header class="site-header">
   <div class="wrap header-in">
@@ -39,12 +59,24 @@ function header(active) {
     <nav class="site-nav" aria-label="Main">
       <a href="/generator/" class="${active === "generator" ? "on" : ""}">Studio</a>
       <div class="nav-drop">
-        <button type="button" aria-haspopup="true">Devices</button>
+        <button type="button" aria-haspopup="true">Devices ${I.chev}</button>
         <div class="drop-menu">${deviceLinks}</div>
       </div>
       <a href="/about/" class="${active === "about" ? "on" : ""}">About</a>
     </nav>
-    <a class="btn btn-primary btn-sm" href="/generator/">Open Studio</a>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" data-theme-toggle aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="only-light">${I.moon}</span><span class="only-dark">${I.sun}</span>
+      </button>
+      <a class="btn btn-primary btn-sm" href="/generator/">Open Studio</a>
+      <button type="button" class="icon-btn menu-btn" data-menu-toggle aria-label="Open menu" aria-expanded="false"><span class="m-open">${I.menu}</span><span class="m-close" style="display:none">${I.x}</span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" data-mobile-menu>
+    <a class="m-link" href="/generator/">Studio <span>→</span></a>
+    ${mDeviceLinks}
+    <a class="m-link" href="/about/">About <span>→</span></a>
+    <div class="m-cta"><a class="btn btn-primary" href="/generator/">Open Studio — it's free</a></div>
   </div>
 </header>`;
 }
@@ -79,6 +111,35 @@ ${head({ title, description, path, ogImage, jsonLd })}
 ${header(active)}
 <main>${body}</main>
 ${footer()}
+<script>
+(function(){
+  var root = document.documentElement;
+  document.querySelectorAll('[data-theme-toggle]').forEach(function(b){
+    b.setAttribute('aria-pressed', root.dataset.theme === 'dark' ? 'true' : 'false');
+    b.addEventListener('click', function(){
+      var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('creestion-theme', next); } catch(e){}
+      b.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+    });
+  });
+  var menuBtn = document.querySelector('[data-menu-toggle]');
+  var menu = document.querySelector('[data-mobile-menu]');
+  if (menuBtn && menu) {
+    var iOpen = menuBtn.querySelector('.m-open'), iClose = menuBtn.querySelector('.m-close');
+    menuBtn.addEventListener('click', function(){
+      var open = menu.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      if (iOpen) iOpen.style.display = open ? 'none' : '';
+      if (iClose) iClose.style.display = open ? '' : 'none';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ menu.classList.remove('open'); });
+    });
+  }
+})();
+</script>
 </body>
 </html>`;
 }
@@ -145,19 +206,33 @@ export function homePage() {
     </a>`
   ).join("");
   const body = `
-<section class="hero"><div class="wrap hero-in">
-  <div class="hero-copy">
-    <span class="badge">Free · No signup · No watermark</span>
-    <h1>App store screenshots,<br>designed in minutes.</h1>
-    <p class="lede">Creestion is a free manual studio for beautiful store listings. Upload your app's screenshots, arrange them on exact-size canvases for iPhone, iPad, Android, Mac, and Windows — then export full-resolution PNGs.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="/generator/">Open the Studio</a>
-      <a class="btn btn-ghost" href="#devices">Browse devices</a>
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"><span class="orb orb-1"></span><span class="orb orb-2"></span></div>
+  <div class="wrap hero-in">
+    <span class="badge"><span class="dot"></span>Free forever · No signup · No watermark</span>
+    <h1>App store screenshots,<br><span class="grad">designed in minutes.</span></h1>
+    <p class="lede">Creestion is a free studio for beautiful store listings. Upload your app's screenshots, arrange them on exact-size canvases for iPhone, iPad, Android, Mac, and Windows — then export full-resolution PNGs.</p>
+    <div class="cta-row center">
+      <a class="btn btn-primary btn-lg" href="/generator/">Open the Studio — it's free</a>
+      <a class="btn btn-ghost btn-lg" href="#devices">Browse devices</a>
     </div>
-    <p class="micro">Runs 100% in your browser. Your screenshots never leave your device.</p>
+    <p class="micro">${I.check} Runs 100% in your browser &nbsp;·&nbsp; ${I.check} Your screenshots never leave your device</p>
+    <div class="stores"><span>Made for</span>
+      <div class="s-row">
+        <span>${I.phone} App Store</span><span>${I.phone} Google Play</span><span>${I.monitor} Mac App Store</span><span>${I.monitor} Microsoft Store</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img class="float-dev f-left" src="/screenshots/device-iphone-t.png" alt="" width="420" height="280" loading="lazy">
+      <img class="float-dev f-right" src="/screenshots/device-mac-t.png" alt="" width="660" height="440" loading="lazy">
+      <div class="browser">
+        <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">creestion.pages.dev/generator</span></div>
+        <img class="shot" src="/screenshots/hero-studio.png" alt="Creestion studio editing iPhone App Store screenshots" width="880" height="587" fetchpriority="high">
+      </div>
+    </div>
   </div>
-  <div class="hero-art"><img src="/screenshots/hero-studio.png" alt="Creestion studio editing iPhone App Store screenshots" width="960" height="640" fetchpriority="high"></div>
-</div></section>
+  <div class="hero-fade" aria-hidden="true"></div>
+</section>
 
 <section class="strip"><div class="wrap stats">
   <div><strong>5</strong><span>device canvases</span></div>
