@@ -127,8 +127,25 @@ export function App() {
  * the config when a stored value no longer applies (a device or frame
  * variant removed from the config, for instance).
  */
-function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved: SavedDesign; onRefresh: () => void }) {
-  const design = manifest.design;
+/** Shared theme key with the marketing site (same localStorage key the
+    landing page's toggle reads/writes), so the studio opens in the same
+    appearance the visitor chose there. Falls back to the OS preference,
+    then to the previously saved studio view. */
+function initialDark(view: SavedView): boolean {
+  if (new URLSearchParams(window.location.search).get("dark") === "1") return true;
+  try {
+    const t = localStorage.getItem("creestion-theme");
+    if (t === "dark") return true;
+    if (t === "light") return false;
+  } catch {
+    /* storage unavailable — fall through */
+  }
+  if (typeof window.matchMedia === "function" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    return true;
+  return view.dark === true;
+}
+
+function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved: SavedDesign; onRefresh: () => void }) {  const design = manifest.design;
   const view = loadView(manifest.app.name);
   // Mobile (< lg) settings drawer. Closed by default so the stage gets the full screen.
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -169,9 +186,7 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
       ? view.locale
       : (manifest.locales[0] ?? ""),
   );
-  const [dark, setDark] = useState(
-    new URLSearchParams(window.location.search).get("dark") === "1" || view.dark === true,
-  );
+  const [dark, setDark] = useState(() => initialDark(view));
   const [stripView, setStripView] = useState<StripView>(view.view === "grid" ? "grid" : "strip");
   const knownLayout = (key: string | undefined) =>
     key && design.layouts.some((l) => l.key === key) ? key : undefined;
@@ -284,6 +299,12 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
+    // Keep the marketing site in sync: same key its toggle reads/writes.
+    try {
+      localStorage.setItem("creestion-theme", dark ? "dark" : "light");
+    } catch {
+      /* storage unavailable (private mode) — the session still works */
+    }
   }, [dark]);
 
   // The bundled typefaces' @font-face rules, declared once in <head>.
