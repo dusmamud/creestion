@@ -207,30 +207,40 @@ export function homePage() {
   ).join("");
   const body = `
 <section class="hero">
-  <div class="wrap hero-in">
+  <div class="wrap hero-top">
     <span class="badge"><span class="dot"></span>Free forever · No signup · No watermark</span>
     <h1>App store screenshots,<br>designed in minutes.</h1>
-    <p class="lede">Creestion is a free studio for beautiful store listings. Upload your app's screenshots, arrange them on exact-size canvases for iPhone, iPad, Android, Mac, and Windows — then export full-resolution PNGs.</p>
+    <p class="lede">Upload your app's screens, arrange them on exact-size canvases for every major store, and export full-resolution PNGs — right in your browser.</p>
     <div class="cta-row center">
       <a class="btn btn-primary btn-lg" href="/generator/">Open the Studio — it's free</a>
-      <a class="btn btn-ghost btn-lg" href="#devices">Browse devices</a>
+      <a class="btn btn-ghost btn-lg" href="#devices">See all devices</a>
     </div>
-    <p class="micro">${I.check} Runs 100% in your browser &nbsp;·&nbsp; ${I.check} Your screenshots never leave your device</p>
-    <div class="stores"><span>Made for</span>
-      <div class="s-row">
-        <span>${I.phone} App Store</span><span>${I.phone} Google Play</span><span>${I.monitor} Mac App Store</span><span>${I.monitor} Microsoft Store</span>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <img class="float-dev f-left" src="/screenshots/device-iphone-t.png" alt="" width="420" height="280" loading="lazy">
-      <img class="float-dev f-right" src="/screenshots/device-mac-t.png" alt="" width="660" height="440" loading="lazy">
-      <div class="browser">
-        <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">creestion.pages.dev/generator</span></div>
-        <img class="shot" src="/screenshots/hero-studio.png" alt="Creestion studio editing iPhone App Store screenshots" width="880" height="587" fetchpriority="high">
-      </div>
+    <p class="micro">${I.check} iPhone · iPad · Android · Mac · Windows &nbsp;·&nbsp; ${I.check} Your files never leave your device</p>
+  </div>
+  <div class="hero-showcase">
+    <div class="showcase-row">
+      <figure class="shot">
+        <div class="frame-phone"><div class="scr"><span class="notch"></span><img src="/demo/ai-shot-1.png" alt="iPhone App Store screenshot example" width="296" height="642" loading="lazy"></div></div>
+        <figcaption><strong>iPhone</strong>1320 × 2868</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame-tablet"><div class="scr"><img src="/demo/ai-shot-2.png" alt="iPad App Store screenshot example" width="356" height="474" loading="lazy"></div></div>
+        <figcaption><strong>iPad</strong>2064 × 2752</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame-phone"><div class="scr"><span class="notch"></span><img src="/demo/ai-shot-3.png" alt="Android Google Play screenshot example" width="296" height="642" loading="lazy"></div></div>
+        <figcaption><strong>Android</strong>1080 × 1920</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame-desk r1610"><img src="/demo/desk-1.png" alt="Mac App Store screenshot example" width="524" height="328" loading="lazy"></div>
+        <figcaption><strong>Mac</strong>2880 × 1800</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame-desk r169"><img src="/demo/desk-3.png" alt="Microsoft Store screenshot example" width="568" height="320" loading="lazy"></div>
+        <figcaption><strong>Windows</strong>3840 × 2160</figcaption>
+      </figure>
     </div>
   </div>
-  <div class="hero-fade" aria-hidden="true"></div>
 </section>
 
 <section class="strip"><div class="wrap stats">
