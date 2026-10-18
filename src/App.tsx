@@ -136,11 +136,16 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
   // type is view state of its own: an unconfigured tab has no device key to
   // derive it from. Sessions saved before the iPad tab stored the platform
   // instead; its "ios" is no type, so the saved device picks the tab then.
-  const initialType: DeviceType = isDeviceType(view.platform)
-    ? view.platform
-    : (manifest.devices.find((d) => d.key === view.device)?.type ??
-      manifest.devices[0]?.type ??
-      "iphone");
+  // A #<deviceType> hash (from device landing pages) wins over saved state.
+  const hashValue = window.location.hash.replace(/^#/, "");
+  const hashType: DeviceType | null = isDeviceType(hashValue) ? hashValue : null;
+  const initialType: DeviceType =
+    hashType ??
+    (isDeviceType(view.platform)
+      ? view.platform
+      : (manifest.devices.find((d) => d.key === view.device)?.type ??
+        manifest.devices[0]?.type ??
+        "iphone"));
   const [deviceType, setDeviceType] = useState(initialType);
   const [device, setDevice] = useState(() => {
     const devices = manifest.devices.filter((d) => d.type === initialType);
@@ -150,6 +155,12 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
   });
   const selectDeviceType = (t: DeviceType) => {
     setDeviceType(t);
+    // Keep the URL shareable: device landing pages deep-link via #<type>.
+    try {
+      history.replaceState(null, "", `#${t}`);
+    } catch {
+      /* non-history environments (file://) still work */
+    }
     const devices = manifest.devices.filter((d) => d.type === t);
     if (devices.length > 0 && !devices.some((d) => d.key === device)) setDevice(devices[0]!.key);
   };
