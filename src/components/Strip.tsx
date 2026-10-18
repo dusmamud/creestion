@@ -190,6 +190,7 @@ export function Strip({
     return capture ? [{ scene, capture }] : [];
   });
 
+
   const segments =
     design.preview && captures.clips
       ? design.preview.segments.flatMap((seg) => {
@@ -1009,7 +1010,7 @@ function DeviceView({
       >
         {captureUrl ? (
           <img
-            src={`/${captureUrl}`}
+            src={captureUrl.startsWith("blob:") ? captureUrl : `/${captureUrl}`}
             alt=""
             draggable={false}
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
