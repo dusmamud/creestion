@@ -39,39 +39,68 @@ export function ScenesBar({
   };
 
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      {scenes.map((scene) => (
-        <SceneChip
-          key={scene.id}
-          scene={scene}
-          hasCapture={captures?.screenshots.some((s) => s.sceneId === scene.id) ?? false}
-          busy={busy === scene.id}
-          disabled={busy !== null}
-          onUpload={(file) => run(scene.id, () => onUpload(scene.id, file))}
-          onDelete={() => run(`del:${scene.id}`, () => onDeleteScene(scene.id))}
-        />
-      ))}
-      {adding ? (
-        <AddSceneForm
-          onCancel={() => setAdding(false)}
-          onSubmit={(id, headline) => run("add", () => onAddScene(id, headline).then(() => setAdding(false)))}
-        />
-      ) : (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={busy !== null}
-          onClick={() => {
-            setError(null);
-            setAdding(true);
-          }}
-        >
-          <PlusIcon /> Add scene
-        </Button>
-      )}
-      {error ? <p className="text-xs font-medium text-destructive">{error}</p> : null}
-    </div>
+    <>
+      {/* Mobile (< sm): one swipeable row of chips. Desktop: wrapped rows. */}
+      <div className="-mx-4 mb-4 flex snap-x items-center gap-2 overflow-x-auto px-4 pt-1 pb-1 [scrollbar-width:none] sm:mx-0 sm:mb-4 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pt-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
+        {scenes.map((scene) => (
+          <SceneChip
+            key={scene.id}
+            scene={scene}
+            hasCapture={captures?.screenshots.some((s) => s.sceneId === scene.id) ?? false}
+            busy={busy === scene.id}
+            disabled={busy !== null}
+            onUpload={(file) => run(scene.id, () => onUpload(scene.id, file))}
+            onDelete={() => run(`del:${scene.id}`, () => onDeleteScene(scene.id))}
+          />
+        ))}
+        {/* Desktop keeps the add control inline in the row. */}
+        <div className="hidden shrink-0 sm:contents">
+          {adding ? (
+            <AddSceneForm
+              onCancel={() => setAdding(false)}
+              onSubmit={(id, headline) => run("add", () => onAddScene(id, headline).then(() => setAdding(false)))}
+            />
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={busy !== null}
+              onClick={() => {
+                setError(null);
+                setAdding(true);
+              }}
+            >
+              <PlusIcon /> Add scene
+            </Button>
+          )}
+        </div>
+        {error ? <p className="shrink-0 text-xs font-medium text-destructive">{error}</p> : null}
+      </div>
+      {/* Mobile: floating Add scene action pinned to the bottom. */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:hidden">
+        <div className="pointer-events-auto">
+          {adding ? (
+            <AddSceneForm
+              onCancel={() => setAdding(false)}
+              onSubmit={(id, headline) => run("add", () => onAddScene(id, headline).then(() => setAdding(false)))}
+            />
+          ) : (
+            <Button
+              type="button"
+              disabled={busy !== null}
+              onClick={() => {
+                setError(null);
+                setAdding(true);
+              }}
+              className="h-11 rounded-full px-5 text-sm shadow-xl"
+            >
+              <PlusIcon /> Add scene
+            </Button>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -94,7 +123,7 @@ function SceneChip({
   const [dragging, setDragging] = useState(false);
   return (
     <div
-      className={`flex items-center gap-1.5 rounded-full border py-1 pr-1 pl-3 text-xs transition-colors ${
+      className={`flex shrink-0 snap-start items-center gap-1.5 rounded-full border py-1 pr-1 pl-3 text-xs transition-colors ${
         dragging
           ? "border-primary bg-primary/10"
           : hasCapture

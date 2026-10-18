@@ -399,9 +399,9 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
             {dark ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
           </button>
         </div>
-        <main className="relative grid min-h-0 flex-1 items-start justify-center overflow-auto p-4 sm:place-items-center-safe sm:p-10">
+        <main className="relative grid min-h-0 flex-1 items-start justify-center overflow-auto p-4 pb-24 sm:place-items-center-safe sm:p-10">
           {spec && captures ? (
-            <div className="w-full max-w-[1400px]">
+            <div className="w-full max-w-[1400px] min-w-0">
               <ScenesBar
                 scenes={design.scenes}
                 captures={captures}
@@ -445,7 +445,7 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
               />
             </div>
           ) : spec ? (
-            <div className="w-full max-w-[1400px]">
+            <div className="w-full max-w-[1400px] min-w-0">
               <ScenesBar
                 scenes={design.scenes}
                 captures={captures}
