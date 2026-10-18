@@ -116,7 +116,7 @@ export function Strip({
   spec: DeviceEntry;
   locale: string;
   background: string;
-  frameUrl: string;
+  frameUrl: string | null;
   fontFamily: string;
   copy: Record<string, SceneCopy>;
   onCopy: (sceneId: string, field: "headline" | "subhead", text: string) => void;
@@ -774,7 +774,7 @@ export function ScreenshotScene({
   theme: Theme;
   screenOnly: boolean;
   background: string;
-  frameUrl: string;
+  frameUrl: string | null;
   /** The bezel art's geometry; the iOS bundled art's when the device brings none. */
   geom: FrameGeometry | undefined;
   copyScale: number;

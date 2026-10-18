@@ -4,6 +4,8 @@ import {
   SmartphoneIcon,
   TabletIcon,
   TriangleAlertIcon,
+  LaptopIcon,
+  MonitorIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { EmptyState } from "./components/EmptyState";
@@ -33,7 +35,7 @@ import {
 /** Sentinel for the config's own layout sequence, which the studio can show but not edit. */
 export const CUSTOM_TEMPLATE = "__custom__";
 
-const DEVICE_TYPES: DeviceType[] = ["iphone", "ipad", "android"];
+const DEVICE_TYPES: DeviceType[] = ["iphone", "ipad", "android", "mac", "windows"];
 
 /**
  * Shown when a device-type tab is selected but its device is not in the
@@ -61,6 +63,18 @@ const ENABLE_DEVICE_TYPE: Record<
     title: "No Google Play screenshots yet",
     body: "Ask your coding agent to set them up:",
     command: "create Google Play screenshots using creestion",
+  },
+  mac: {
+    icon: LaptopIcon,
+    title: "No Mac screenshots yet",
+    body: "Ask your coding agent to set them up:",
+    command: "create Mac App Store screenshots using creestion",
+  },
+  windows: {
+    icon: MonitorIcon,
+    title: "No Windows screenshots yet",
+    body: "Ask your coding agent to set them up:",
+    command: "create Microsoft Store screenshots using creestion",
   },
 };
 
@@ -281,9 +295,15 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
   // another locale's would put the wrong language on screen.
   const captures = deviceCaptures?.byLocale ? deviceCaptures.byLocale[locale] : deviceCaptures;
   const firstVariant = design.frameVariants.find((v) => v.device === device)?.key;
-  const frameUrl = frame
-    ? `frames/${frame}.png`
-    : (design.customFrameUrl ?? `frames/${firstVariant ?? design.frameVariants[0]?.key}.png`);
+  // Screen-only devices (desktop, Android) get no bezel: a null/undefined
+  // frame means "no frame", not "fall back to the first variant".
+  // (undefined covers designs saved before the device existed.)
+  const frameUrl =
+    frames[device] == null
+      ? null
+      : frame
+        ? `frames/${frame}.png`
+        : (design.customFrameUrl ?? `frames/${firstVariant ?? design.frameVariants[0]?.key}.png`);
 
   const runExport = (onProgress: (done: number, total: number) => void) => {
     if (!spec || !captures) return Promise.reject(new Error("Nothing to export yet."));
@@ -422,7 +442,7 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
 type DesignState = {
   background: string;
   /** Bezel variant per device key; "" or absent means the config's custom art. */
-  frames: Record<string, string>;
+  frames: Record<string, string | null>;
   fontFamily: string;
   copy: Record<string, SceneCopy>;
   layout: string;
@@ -442,11 +462,16 @@ type DesignState = {
 };
 
 /** The saved variant per device when it is drawn for that device, else the config's. */
-function initialFrames(design: Design, saved: SavedDesign): Record<string, string> {
-  const known = (device: string, key: string | undefined) =>
+function initialFrames(design: Design, saved: SavedDesign): Record<string, string | null> {
+  const known = (device: string, key: string | null | undefined) =>
     key && design.frameVariants.some((v) => v.key === key && v.device === device) ? key : undefined;
-  const out: Record<string, string> = {};
+  const out: Record<string, string | null> = {};
   for (const [device, variant] of Object.entries(design.frames)) {
+    // null variant = screen-only device: preserve the null, don't coerce to "".
+    if (variant === null) {
+      out[device] = null;
+      continue;
+    }
     const legacy = design.frameVariants.find((v) => v.key === saved.frame)?.device;
     const pick =
       known(device, saved.frames?.[device]) ??

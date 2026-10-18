@@ -9,13 +9,13 @@
  *   themselves, with no store constraints enforced.
  */
 
-export type DeviceKey = "iphone-6.9" | "ipad-13" | "pixel-10-pro";
+export type DeviceKey = "iphone-6.9" | "ipad-13" | "pixel-10-pro" | "mac-16-10" | "windows-16-9";
 
 /**
  * The studio's device-type tabs. Finer than the platform: iPhones and iPads
  * share the App Store pipeline but are shown apart.
  */
-export type DeviceType = "iphone" | "ipad" | "android";
+export type DeviceType = "iphone" | "ipad" | "android" | "mac" | "windows";
 
 export type DeviceSpec = {
   /**
@@ -23,7 +23,7 @@ export type DeviceSpec = {
    * so raw/, screenshots/ and previews/ all share one naming scheme.
    */
   label: string;
-  platform: "ios" | "android";
+  platform: "ios" | "android" | "mac" | "windows";
   type: DeviceType;
   /**
    * `xcrun simctl` device type name; the toolkit picks the newest runtime that
@@ -93,6 +93,27 @@ export const DEVICES: Record<DeviceKey, DeviceSpec> = {
     // Near the 1280x2856 Pixel screen's aspect, so the cover-crop trims only a
     // sliver; YouTube accepts any portrait size.
     preview: { width: 1080, height: 2400 },
+  },
+  // Desktop: landscape screenshots, no bezel (screen-only). Mac uses Apple's
+  // largest accepted 16:10 size (2880x1800); Windows uses 4K (3840x2160),
+  // within Microsoft's 1366x768 minimum.
+  "mac-16-10": {
+    label: "Mac",
+    platform: "mac",
+    type: "mac",
+    native: { width: 2880, height: 1800 },
+    screenshot: { width: 2880, height: 1800 },
+    preview: null,
+    screenOnly: true,
+  },
+  "windows-16-9": {
+    label: "Windows",
+    platform: "windows",
+    type: "windows",
+    native: { width: 3840, height: 2160 },
+    screenshot: { width: 3840, height: 2160 },
+    preview: null,
+    screenOnly: true,
   },
 };
 

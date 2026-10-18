@@ -98,7 +98,7 @@ export async function exportScenes(
   captures: DeviceCaptures,
   spec: DeviceEntry,
   locale: string,
-  frameUrl: string,
+  frameUrl: string | null,
   design: ExportDesign,
   onProgress?: (done: number, total: number) => void,
 ): Promise<void> {

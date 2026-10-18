@@ -49,12 +49,12 @@ export type FrameGeometry = {
 };
 
 /** Mirrors DeviceType in src/specs.ts: the sidebar's device-type tabs. */
-export type DeviceType = "iphone" | "ipad" | "android";
+export type DeviceType = "iphone" | "ipad" | "android" | "mac" | "windows";
 
 export type DeviceEntry = {
   key: string;
   label: string;
-  platform: "ios" | "android";
+  platform: "ios" | "android" | "mac" | "windows";
   type: DeviceType;
   /** Copy size relative to the reference column's type; see DeviceSpec in src/specs.ts. */
   copyScale: number;
@@ -185,12 +185,12 @@ const DEFAULT_THEME: Theme = {
 };
 
 /** Demo scenes with bundled mockup screenshots, like the studio's sample strip. */
-const DEMO_SCENES: Array<{ id: string; headline: string; subhead: string; shot: string }> = [
-  { id: "smart-experience", headline: "Smart Mobile Experience", subhead: "Discover a new way to stay productive", shot: "demo/ai-shot-1.png" },
-  { id: "realtime-analytics", headline: "Real-time Analytics", subhead: "Track your progress with interactive graphs", shot: "demo/ai-shot-2.png" },
-  { id: "seamless-collaboration", headline: "Seamless Collaboration", subhead: "Stay connected with your team anywhere", shot: "demo/ai-shot-3.png" },
-  { id: "ultra-fast-secure", headline: "Ultra Fast & Secure", subhead: "Built with state of the art technology", shot: "demo/ai-shot-4.png" },
-  { id: "made-for-everyone", headline: "Made for Everyone", subhead: "Simple, fast and delightful", shot: "demo/ai-shot-5.png" },
+const DEMO_SCENES: Array<{ id: string; headline: string; subhead: string; shot: string; desktopShot?: string }> = [
+  { id: "smart-experience", headline: "Smart Mobile Experience", subhead: "Discover a new way to stay productive", shot: "demo/ai-shot-1.png", desktopShot: "demo/desk-1.png" },
+  { id: "realtime-analytics", headline: "Real-time Analytics", subhead: "Track your progress with interactive graphs", shot: "demo/ai-shot-2.png", desktopShot: "demo/desk-2.png" },
+  { id: "seamless-collaboration", headline: "Seamless Collaboration", subhead: "Stay connected with your team anywhere", shot: "demo/ai-shot-3.png", desktopShot: "demo/desk-3.png" },
+  { id: "ultra-fast-secure", headline: "Ultra Fast & Secure", subhead: "Built with state of the art technology", shot: "demo/ai-shot-4.png", desktopShot: "demo/desk-4.png" },
+  { id: "made-for-everyone", headline: "Made for Everyone", subhead: "Simple, fast and delightful", shot: "demo/ai-shot-5.png", desktopShot: "demo/desk-5.png" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -276,12 +276,13 @@ export async function loadManifest(): Promise<StoreManifest> {
   const captures: Record<string, DeviceCaptures> = {};
   // Demo shots show on every device tab (cover-cropped to the device aspect);
   // session uploads are per-device, like the original studio.
-  for (const deviceKey of ["iphone-6.9", "ipad-13", "pixel-10-pro"]) {
+  for (const deviceKey of ["iphone-6.9", "ipad-13", "pixel-10-pro", "mac-16-10", "windows-16-9"]) {
     const shots: Array<{ sceneId: string; url: string }> = [];
+    const desktop = deviceKey === "mac-16-10" || deviceKey === "windows-16-9";
     for (const d of DEMO_SCENES) {
       if (deleted.has(d.id)) continue;
       const session = sessionShots[deviceKey]?.[d.id];
-      shots.push({ sceneId: d.id, url: session ?? d.shot });
+      shots.push({ sceneId: d.id, url: session ?? (desktop ? d.desktopShot ?? d.shot : d.shot) });
     }
     for (const s of overlay.addedScenes) {
       const session = sessionShots[deviceKey]?.[s.id];
@@ -307,7 +308,7 @@ export async function loadManifest(): Promise<StoreManifest> {
     locales: [LOCALE],
     design: {
       theme: { ...DEFAULT_THEME },
-      frames: { "iphone-6.9": "17-pro-blue", "ipad-13": "ipad-pro-13-silver", "pixel-10-pro": null },
+      frames: { "iphone-6.9": "17-pro-blue", "ipad-13": "ipad-pro-13-silver", "pixel-10-pro": null, "mac-16-10": null, "windows-16-9": null },
       frameVariants: FRAME_VARIANTS.map((key) => ({ key, device: VARIANT_DEVICE[key]! })),
       customFrameUrl: null,
       fonts: FONTS.map((f) => ({
@@ -343,7 +344,7 @@ export type SavedDesign = {
   /** One variant for the device it is drawn for; written by older studios. */
   frame?: string;
   /** A bezel variant per device key. */
-  frames?: Record<string, string>;
+  frames?: Record<string, string | null>;
   fontFamily?: string;
   /** Copy edited in the lightbox, per screenshot scene id, then locale. */
   copy?: Record<string, SceneCopy>;

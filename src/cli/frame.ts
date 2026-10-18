@@ -56,6 +56,19 @@ export const FRAMES: Record<DeviceKey, FrameGeometry> = {
     screenRadius: 36,
   },
   "pixel-10-pro": ANDROID_FRAME.geom,
+  // Desktop is screen-only (no bezel): the frame is the screen itself.
+  "mac-16-10": {
+    width: 2880,
+    height: 1800,
+    screen: { x: 0, y: 0, width: 2880, height: 1800 },
+    screenRadius: 24,
+  },
+  "windows-16-9": {
+    width: 3840,
+    height: 2160,
+    screen: { x: 0, y: 0, width: 3840, height: 2160 },
+    screenRadius: 16,
+  },
 };
 
 /** The iPhone geometry, which compose() uses when no device is given. */
