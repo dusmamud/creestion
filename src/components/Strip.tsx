@@ -28,19 +28,22 @@ import type {
 import { CHECKERBOARD, layoutOptions, TRANSPARENT } from "./DesignPanel";
 import { Select } from "./Sidebar";
 import { Button } from "./ui/button";
+import { useMediaQuery } from "../lib/useMediaQuery";
 
 /**
  * Tiles per strip page, and per grid row; the App Store product page shows
  * this many before scrolling.
  */
 const PAGE_SIZE = 5;
+/** Narrow screens (< sm) show fewer, larger tiles per page/row. */
+const NARROW_PAGE_SIZE = 2;
 /** Apple's cap on screenshots per device family. Extra tiles stay visible, dimmed. */
 const MAX_SCREENSHOTS = 10;
 const GAP = "1rem";
 
-/** Flex basis for a grid cell that occupies `span` screenshot slots in a PAGE_SIZE row. */
-const cellBasis = (span: number) =>
-  `calc((100% - ${PAGE_SIZE - 1} * ${GAP}) / ${PAGE_SIZE} * ${span} + ${span - 1} * ${GAP})`;
+/** Flex basis for a grid cell that occupies `span` screenshot slots in a `size`-wide row. */
+const cellBasis = (span: number, size: number) =>
+  `calc((100% - ${size - 1} * ${GAP}) / ${size} * ${span} + ${span - 1} * ${GAP})`;
 
 /**
 /**
@@ -137,6 +140,9 @@ export function Strip({
   onPosition: (sceneId: string, offsets: LayerOffsets | null) => void;
 }) {
   const theme = design.theme;
+  // Narrow screens show fewer, larger tiles per strip page / grid row.
+  const isNarrow = useMediaQuery("(max-width: 639px)");
+  const pageSize = isNarrow ? NARROW_PAGE_SIZE : PAGE_SIZE;
   const frameGeometry = FRAMES[tileSpec.key as keyof typeof FRAMES] ?? FRAMES["iphone-6.9"];
   const scenes =
     order.length > 0
@@ -361,7 +367,7 @@ export function Strip({
   for (const cell of cells) {
     const current = pageCells[pageCells.length - 1];
     const used = current.reduce((n, c) => n + c.tiles.length, 0);
-    if (used + cell.tiles.length > PAGE_SIZE && current.length > 0) pageCells.push([cell]);
+    if (used + cell.tiles.length > pageSize && current.length > 0) pageCells.push([cell]);
     else current.push(cell);
   }
   const pages = pageCells.length;
@@ -399,7 +405,7 @@ export function Strip({
   const visibleIds = visible.flatMap((c) => (c.sceneId ? [c.sceneId] : []));
   const reorderPage = reorderWithin(visibleIds);
   // Pad the last page so tiles keep the same width as on a full page.
-  const columns = pages > 1 ? PAGE_SIZE : entries.length;
+  const columns = pages > 1 ? pageSize : entries.length;
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -419,7 +425,7 @@ export function Strip({
                 className="relative flex min-w-0 gap-4"
                 style={{
                   zIndex: lifting === cell.sceneId ? 10 : undefined,
-                  flex: `0 0 ${cellBasis(cell.tiles.length)}`,
+                  flex: `0 0 ${cellBasis(cell.tiles.length, pageSize)}`,
                 }}
                 animate={{ scale: lifting === cell.sceneId ? 1.04 : 1 }}
                 onDragStart={() => {
@@ -439,7 +445,7 @@ export function Strip({
               <li
                 key={entries[cell.tiles[0]].key}
                 className="min-w-0"
-                style={{ flex: `0 0 ${cellBasis(1)}` }}
+                style={{ flex: `0 0 ${cellBasis(1, pageSize)}` }}
               >
                 {tileAt(cell.tiles[0])}
               </li>

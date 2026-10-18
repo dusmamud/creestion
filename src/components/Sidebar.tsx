@@ -9,6 +9,7 @@ import {
   SmartphoneIcon,
   SunIcon,
   TabletIcon,
+  XIcon,
 } from "lucide-react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import type { ReactNode } from "react";
@@ -71,6 +72,8 @@ export function Sidebar({
   onLayout,
   onScreenOnly,
   onExport,
+  open = true,
+  onClose,
 }: {
   manifest: StoreManifest;
   deviceType: DeviceType;
@@ -98,10 +101,22 @@ export function Sidebar({
   onLayout: (v: string) => void;
   onScreenOnly: (v: boolean) => void;
   onExport: (onProgress: (done: number, total: number) => void) => Promise<void>;
+  /** Mobile drawer state: below lg the sidebar slides in/out. Desktop ignores it. */
+  open?: boolean;
+  onClose?: () => void;
 }) {
   const typeDevices = manifest.devices.filter((d) => d.type === deviceType);
   return (
-    <aside className="flex w-[300px] shrink-0 flex-col overflow-hidden rounded-2xl border border-sidebar-border bg-sidebar text-sidebar-foreground">
+    <aside
+      className={cn(
+        "flex w-[300px] max-w-[85vw] shrink-0 flex-col overflow-hidden rounded-2xl border border-sidebar-border bg-sidebar text-sidebar-foreground",
+        // Mobile (< lg): fixed slide-in drawer. Desktop: the original static panel.
+        "fixed inset-y-3 left-3 z-50 shadow-2xl transition-transform duration-300 ease-out",
+        "lg:static lg:z-auto lg:shadow-none lg:transition-none",
+        open ? "translate-x-0" : "-translate-x-[calc(100%+1rem)]",
+        "lg:translate-x-0",
+      )}
+    >
       <header className="flex h-14 shrink-0 items-center justify-between pr-3 pl-5">
         <h1 className="text-base font-semibold tracking-tight select-none">
           <span className="creestion-wordmark">creestion</span>
@@ -124,6 +139,15 @@ export function Sidebar({
             aria-label={dark ? "Switch to light appearance" : "Switch to dark appearance"}
           >
             {dark ? <SunIcon /> : <MoonIcon />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={onClose}
+            aria-label="Close settings"
+            className="lg:hidden"
+          >
+            <XIcon />
           </Button>
         </div>
       </header>

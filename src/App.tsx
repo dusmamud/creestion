@@ -1,7 +1,10 @@
 import {
   CameraIcon,
   type LucideIcon,
+  MenuIcon,
+  MoonIcon,
   SmartphoneIcon,
+  SunIcon,
   TabletIcon,
   TriangleAlertIcon,
   LaptopIcon,
@@ -127,6 +130,8 @@ export function App() {
 function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved: SavedDesign; onRefresh: () => void }) {
   const design = manifest.design;
   const view = loadView(manifest.app.name);
+  // Mobile (< lg) settings drawer. Closed by default so the stage gets the full screen.
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   // Every device-type tab renders even when only one is configured, so the
   // type is view state of its own: an unconfigured tab has no device key to
   // derive it from. Sessions saved before the iPad tab stored the platform
@@ -330,6 +335,16 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
 
   return (
     <div className="flex h-full bg-stage p-3 text-foreground">
+      {/* Mobile drawer backdrop (lg+ never shows it). */}
+      <button
+        type="button"
+        aria-hidden={!sidebarOpen}
+        tabIndex={sidebarOpen ? 0 : -1}
+        onClick={() => setSidebarOpen(false)}
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 lg:hidden ${
+          sidebarOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
       <Sidebar
         manifest={manifest}
         deviceType={deviceType}
@@ -355,10 +370,36 @@ function Loaded({ manifest, saved, onRefresh }: { manifest: StoreManifest; saved
         onLayout={setLayout}
         onScreenOnly={setScreenOnly}
         onExport={runExport}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="relative grid min-h-0 flex-1 place-items-center-safe overflow-auto p-10">
+        {/* Mobile top bar: opens the settings drawer. Desktop keeps the sidebar. */}
+        <div className="mb-3 flex shrink-0 items-center justify-between rounded-2xl border border-sidebar-border bg-sidebar px-3 py-2.5 text-sidebar-foreground lg:hidden">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open settings"
+              className="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-sidebar-accent"
+            >
+              <MenuIcon className="h-5 w-5" />
+            </button>
+            <span className="creestion-wordmark text-base font-semibold tracking-tight select-none">
+              creestion
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setDark(!dark)}
+            aria-label={dark ? "Switch to light appearance" : "Switch to dark appearance"}
+            className="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-sidebar-accent"
+          >
+            {dark ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+          </button>
+        </div>
+        <main className="relative grid min-h-0 flex-1 items-start justify-center overflow-auto p-4 sm:place-items-center-safe sm:p-10">
           {spec && captures ? (
             <div className="w-full max-w-[1400px]">
               <ScenesBar
