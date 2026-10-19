@@ -174,7 +174,7 @@ a.card.device .go { color: var(--brand); font-weight: 600; font-size: 0.9rem; ma
 .cta-band { background: var(--bg); color: var(--ink); text-align: center; padding: 4.5rem 1.25rem; }
 .cta-band h2 { color: var(--ink); }
 .cta-band p { color: var(--muted); margin-bottom: 1.75rem; }
-.site-footer { background: var(--bg); margin-top: 2rem; }
+.site-footer { background: var(--bg); }
 .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; padding: 3rem 1.25rem 2rem; }
 .foot-brand p { color: var(--muted); font-size: 0.92rem; max-width: 22rem; }
 .site-footer h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.75rem; }
@@ -209,4 +209,8 @@ a.card.device .go { color: var(--brand); font-weight: 600; font-size: 0.9rem; ma
   .stats { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .section { padding: 2.75rem 1.25rem; }
   .header-in .btn-sm { display: none; }
+  .foot-grid { grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem 1.25rem 2rem; }
+  .foot-brand p { max-width: none; }
+  .site-footer ul { gap: 0.7rem; }
+  .site-footer ul a { display: inline-block; padding: 0.2rem 0; }
 }
