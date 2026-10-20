@@ -437,6 +437,27 @@ export function termsPage() {
   });
 }
 
+/* ---------------- 404 ---------------- */
+
+export function notFoundPage() {
+  const body = `<section class="wrap page-head" style="text-align:center;padding-top:6rem;padding-bottom:6rem">
+<h1 style="font-size:4rem;margin-bottom:0.5rem">404</h1>
+<p class="lede" style="margin:0 auto 1.5rem">This page doesn't exist — but your next screenshot set can.</p>
+<div class="cta-row center">
+  <a class="btn btn-primary" href="/">Go home</a>
+  <a class="btn btn-ghost" href="/generator/">Open the Studio</a>
+</div>
+</section>`;
+  return layout({
+    title: "Page not found — Creestion",
+    description: "The page you're looking for doesn't exist.",
+    path: "404",
+    ogImage: "/screenshots/hero-studio.png",
+    jsonLd: [orgSchema],
+    body,
+  });
+}
+
 /* ---------------- sitemap / robots / llms.txt ---------------- */
 
 export function sitemapXml(pages) {

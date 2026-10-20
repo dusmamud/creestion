@@ -17,6 +17,7 @@ import {
   aboutPage,
   privacyPage,
   termsPage,
+  notFoundPage,
   sitemapXml,
   robotsTxt,
   llmsTxt,
@@ -60,6 +61,7 @@ write("privacy/index.html", privacyPage());
 sitemapPaths.push("privacy/");
 write("terms/index.html", termsPage());
 sitemapPaths.push("terms/");
+write("404.html", notFoundPage());
 
 // 4. SEO plumbing
 write("sitemap.xml", sitemapXml(sitemapPaths));
