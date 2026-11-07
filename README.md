@@ -43,3 +43,4 @@ bun run build    # static dist/ -> any static host (Cloudflare Pages)
 MIT — see LICENSE. Bezel art is CC BY 4.0, fonts are OFL 1.1 (see
 `public/frames/ATTRIBUTION.md` and `public/fonts/OFL.txt`).
 Tip: press `Escape` while editing a headline in the lightbox to discard that edit — only `Enter` commits it.
+Note: uploaded screenshots are session-only (object URLs) — re-upload them after a reload, unlike design choices, scenes, and copy, which persist in localStorage.
